@@ -14,7 +14,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html'
+      template: path.resolve(__dirname, 'public/index.html')
     })
   ],
   resolve: {
@@ -25,13 +25,13 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    port: 8080,
+    host: '0.0.0.0',
     historyApiFallback: true,
     hot: true
   },
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
-    publicPath: 'js/'
+    publicPath: '/'
   },
 };

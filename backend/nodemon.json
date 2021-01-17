@@ -2,7 +2,7 @@
   "verbose": true,
   "ignore": ["node_modules"],
   "execMap": {
-    "ts": "ts-node ./src/server.ts"
+    "ts": "DEBUG=express:* ts-node ./src/server.ts"
   },
   "watch": ["src"],
   "ext": "ts"
