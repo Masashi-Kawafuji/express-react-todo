@@ -1,5 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response} from 'express';
+import Todo from '../models/todo';
 
-export const todoList = (req: Request, res: Response) => {
-
+export const todoList = async (req: Request, res: Response) => {
+  const todos = await Todo.findAll();
+  res.json(todos);
 }

@@ -1,7 +1,9 @@
 import express from 'express';
-import Todo from './models/todo';
+import router from './routes';
 
 const app = express();
+
+app.use(router);
 
 const port = process.env.PORT || 3000;
 
