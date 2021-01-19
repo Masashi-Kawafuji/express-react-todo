@@ -1,4 +1,4 @@
-import { Request, Response} from 'express';
+import { Request, Response } from 'express';
 import Todo from '../models/todo';
 import { getIdFromRequest } from '../helpers/controller-helper';
 
@@ -15,9 +15,10 @@ export const todoList = async (req: Request, res: Response<Todo[]>) => {
   res.json(todos);
 }
 
-export const todoDetail = async (req: Request, res: Response<Todo>) => {
+export const todoDetail = async (req: Request, res: Response<Todo | ResponseMessage>) => {
   const todo = await getTodoById(req);
-  res.json(todo);
+  if (todo) res.json(todo);
+  else res.json({ message: 'The item is not Found.' }).status(404);
 }
 
 export const createTodo = (req: Request, res: Response<Todo>) => {
@@ -28,18 +29,26 @@ export const createTodo = (req: Request, res: Response<Todo>) => {
     .catch(err => res.json(err).status(422));
 }
 
-export const updateTodo = async (req: Request, res: Response<Todo>) => {
+export const updateTodo = async (req: Request, res: Response<Todo | ResponseMessage>) => {
   const attributes = req.body;
   const todo = await getTodoById(req);
-  todo.update(attributes)
-    .then(todo => res.json(todo))
-    .catch(err => res.json(err).status(442));
+  if (todo) {
+    todo.update(attributes)
+      .then(todo => res.json(todo))
+      .catch(err => res.json(err).status(442));
+  } else {
+    res.json({ message: 'The item is not Found.' }).status(404);
+  }
 }
 
 export const toggleIsDone = async (req: Request, res: Response<ResponseMessage>) => {
   const todo = await getTodoById(req);
-  await todo.update({ isDone: !todo.isDone })
-  res.json({ message: 'The item got updated successfully.' });
+  if (todo) {
+    await todo.update({ isDone: !todo.isDone });
+    res.json({ message: 'The item got updated successfully.' }).status(204);
+  } else {
+    res.json({ message: 'The item is not Found.' }).status(404);
+  }
 }
 
 export const deleteTodo = async (req: Request, res: Response<null | ResponseMessage>) => {
@@ -48,6 +57,6 @@ export const deleteTodo = async (req: Request, res: Response<null | ResponseMess
     await todo.destroy();
     res.status(204).end();
   } else {
-    res.json({ message: `The todo doesn't exsit.` }).status(404);
+    res.json({ message: 'The item is not Found.' }).status(404);
   }
 }
