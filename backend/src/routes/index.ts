@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import morgan from 'morgan';
-import todoRouter from './todo';
+import AuthRouter from './auth';
 import userRouter from './user';
+import todoRouter from './todo';
 
 const router = Router();
 
 router.use(morgan('dev'));
 
-router.use(todoRouter);
+router.use(AuthRouter);
 router.use(userRouter);
+router.use(todoRouter);
 
 export default router;

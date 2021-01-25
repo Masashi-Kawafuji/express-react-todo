@@ -7,6 +7,8 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
+      SIGNED_COOKIE_SECRET: secret
+      HMAC_SECRET: secret
       DB_NAME: express_react_todo
       DB_HOST: db
       DB_PORT: 3306

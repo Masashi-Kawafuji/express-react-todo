@@ -7,7 +7,7 @@ import sequelize from './db/sequelize';
 const app = express();
 
 // loading middlewares.
-app.use(cookieParser());
+app.use(cookieParser(process.env.SIGNED_COOKIE_SECRET));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(router);

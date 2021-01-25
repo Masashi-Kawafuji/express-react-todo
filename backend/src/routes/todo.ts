@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import * as todoController from '../controllers/todoController';
+import session from '../middlewares/session';
 
 const todoRouter = Router();
+
+// todoRouter.use(session);
 
 todoRouter
   .get('/users/:userId/todos', todoController.todoList)
