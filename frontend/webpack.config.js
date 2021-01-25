@@ -18,9 +18,6 @@ module.exports = {
     })
   ],
   resolve: {
-    alias: {
-      src: path.resolve(__dirname, 'src/')  
-    },
     extensions: ['.tsx', '.ts', '.js']
   },
   devtool: 'inline-source-map',
@@ -30,7 +27,7 @@ module.exports = {
     hot: true
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'js/bundle.js',
     path: path.resolve(__dirname, 'build'),
     publicPath: '/'
   },

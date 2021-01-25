@@ -1,18 +1,26 @@
 import { Request, Response } from 'express';
 import Todo from '../models/todo';
+import User from '../models/user';
 import { getIdFromRequest } from '../helpers/controller-helper';
 
 type ResponseMessage = {
   message: string;
 };
 
+const getUserByUserId: (req: Request) => Promise<User> = req => {
+  const { userId } = req.params;
+  return User.findByPk(userId);
+}
+
 const getTodoById: (req: Request) => Promise<Todo> = req => {
   return Todo.findByPk(getIdFromRequest(req));
 }
 
-export const todoList = async (req: Request, res: Response<Todo[]>) => {
-  const todos = await Todo.findAll();
-  res.json(todos);
+export const todoList = async (req: Request, res: Response<Todo[] | ResponseMessage>) => {
+  const user = await getUserByUserId(req);
+  user.getTodos()
+    .then(todos => res.json(todos))
+    .catch(err => res.json(err).status(404));
 }
 
 export const todoDetail = async (req: Request, res: Response<Todo | ResponseMessage>) => {
@@ -21,10 +29,10 @@ export const todoDetail = async (req: Request, res: Response<Todo | ResponseMess
   else res.json({ message: 'The item is not Found.' }).status(404);
 }
 
-export const createTodo = (req: Request, res: Response<Todo>) => {
+export const createTodo = async (req: Request, res: Response<Todo>) => {
+  const user = await getUserByUserId(req);
   const attributes = req.body;
-  const todo = Todo.build(attributes);
-  todo.save()
+  user.createTodo(attributes)
     .then(todo => res.json(todo).status(201))
     .catch(err => res.json(err).status(422));
 }
