@@ -7,6 +7,7 @@ type ResponseMessage = {
   message: string;
 };
 
+// helpers
 const getUserByUserId: (req: Request) => Promise<User> = req => {
   const { userId } = req.params;
   return User.findByPk(userId);
@@ -16,6 +17,7 @@ const getTodoById: (req: Request) => Promise<Todo> = req => {
   return Todo.findByPk(getIdFromRequest(req));
 }
 
+// actions
 export const todoList = async (req: Request, res: Response<Todo[] | ResponseMessage>) => {
   const user = await getUserByUserId(req);
   user.getTodos()

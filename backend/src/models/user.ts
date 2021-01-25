@@ -37,6 +37,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public createTodo!: HasManyCreateAssociationMixin<Todo>;
   public removeTodo!: HasManyRemoveAssociationMixin<Todo, number>;
 
+  public authenticate: (password: string) => boolean = password => {
+    return this.password === password;
+  }
+  
   public readonly todos: Todo[];
 
   public static associations: {

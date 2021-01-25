@@ -6,10 +6,6 @@ type Message = {
   message: string;
 };
 
-const Authenticate: (user: User, password: string) => boolean = (user, password) => {
-  return user && user.password === password;
-}
-
 export const login = async (req: Request, res: Response<User | Message>) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email: email } });
@@ -17,7 +13,7 @@ export const login = async (req: Request, res: Response<User | Message>) => {
     message: 'The user does not exist or the password is incorrect.'
   };
 
-  if (Authenticate(user, password)) {
+  if (user && user.authenticate(password)) {
     const authToken = jwt.sign({ userId: user.id }, process.env.HMAC_SECRET);
     res.cookie('authToken', authToken, {
       httpOnly: true,
