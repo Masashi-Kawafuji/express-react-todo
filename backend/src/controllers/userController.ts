@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import User from '../models/user';
 
-export const createUser = (req: Request, res: Response<User>) => {
+export const createUser: RequestHandler<null, User> = (req, res) => {
   const attributes = req.body;
   const user = User.build(attributes);
   user.save()

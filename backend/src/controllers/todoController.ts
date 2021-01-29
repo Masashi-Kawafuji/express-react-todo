@@ -1,10 +1,15 @@
-import { Request, Response } from 'express';
+import { RequestHandler, Request } from 'express';
 import Todo from '../models/todo';
 import User from '../models/user';
 import { getIdFromRequest } from '../helpers/controller-helper';
 
 type ResponseMessage = {
   message: string;
+};
+
+type TodoRequestParams = {
+  userId: string;
+  id: string;
 };
 
 // helpers
@@ -18,20 +23,20 @@ const getTodoById: (req: Request) => Promise<Todo> = req => {
 }
 
 // actions
-export const todoList = async (req: Request, res: Response<Todo[] | ResponseMessage>) => {
+export const todoList: RequestHandler<TodoRequestParams, Todo[]> = async (req, res) => {
   const user = await getUserByUserId(req);
   user.getTodos()
     .then(todos => res.json(todos))
     .catch(err => res.json(err).status(404));
 }
 
-export const todoDetail = async (req: Request, res: Response<Todo | ResponseMessage>) => {
+export const todoDetail: RequestHandler<TodoRequestParams, Todo | ResponseMessage> = async (req, res) => {
   const todo = await getTodoById(req);
   if (todo) res.json(todo);
   else res.json({ message: 'The item is not Found.' }).status(404);
 }
 
-export const createTodo = async (req: Request, res: Response<Todo>) => {
+export const createTodo: RequestHandler<TodoRequestParams, Todo | ResponseMessage> = async (req, res) => {
   const user = await getUserByUserId(req);
   const attributes = req.body;
   user.createTodo(attributes)
@@ -39,7 +44,7 @@ export const createTodo = async (req: Request, res: Response<Todo>) => {
     .catch(err => res.json(err).status(422));
 }
 
-export const updateTodo = async (req: Request, res: Response<Todo | ResponseMessage>) => {
+export const updateTodo: RequestHandler<TodoRequestParams, Todo | ResponseMessage> = async (req, res) => {
   const attributes = req.body;
   const todo = await getTodoById(req);
   if (todo) {
@@ -51,7 +56,7 @@ export const updateTodo = async (req: Request, res: Response<Todo | ResponseMess
   }
 }
 
-export const toggleIsDone = async (req: Request, res: Response<ResponseMessage>) => {
+export const toggleIsDone: RequestHandler<TodoRequestParams, Todo | ResponseMessage> = async (req, res) => {
   const todo = await getTodoById(req);
   if (todo) {
     await todo.update({ isDone: !todo.isDone });
@@ -61,7 +66,7 @@ export const toggleIsDone = async (req: Request, res: Response<ResponseMessage>)
   }
 }
 
-export const deleteTodo = async (req: Request, res: Response<null | ResponseMessage>) => {
+export const deleteTodo: RequestHandler<TodoRequestParams, null | ResponseMessage> = async (req, res) => {
   const todo = await getTodoById(req);
   if (todo) {
     await todo.destroy();

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 
@@ -6,10 +6,15 @@ type Message = {
   message: string;
 };
 
-export const login = async (req: Request, res: Response<User | Message>) => {
+type LoginRequestBody = {
+  email: string;
+  password: string;
+};
+
+export const login: RequestHandler<null , User | Message, LoginRequestBody> = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email: email } });
-  const errorMessage = {
+  const errorMessage: Message = {
     message: 'The user does not exist or the password is incorrect.'
   };
 
@@ -24,6 +29,6 @@ export const login = async (req: Request, res: Response<User | Message>) => {
   }
 }
 
-export const logout = (req: Request, res: Response) => {
+export const logout: RequestHandler = (req, res) => {
   res.clearCookie('authToken').status(204).end();
 }
